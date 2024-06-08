@@ -1,68 +1,38 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import FormInput from "./FormInput";
 import { Form, Link } from "react-router-dom";
 import FormRange from "./FormRange";
 import FormSelect from "./FormSelect";
-import FormDatePicker from "./FormDatePicker";
 import FormCheckbox from "./FormCheckbox";
 
+import { listCategories, listCompanies } from "../api";
+import { toast } from "react-toastify";
+
 const Filters = () => {
-  const [selectCategoryList, setSelectCategoryList] = useState([
-    "all",
-    "shoes",
-    "slippers",
-    "heels",
-    "t-shirts",
-    "jackets",
-    "caps",
-    "shorts",
-    "sweaters",
-    "sneakers",
-    "shirts",
-    "boots",
-    "overshirts",
-    "pants",
-    "jeans",
-    "socks",
-    "belts",
-    "trainers",
-  ]);
-  const [selectBrandList, setSelectBrandList] = useState([
-    "all",
-    "WALK LONDON",
-    "Reebok",
-    "Nike",
-    "Jack & Jones",
-    "Crocs",
-    "Vans",
-    "Puma",
-    "New Balance",
-    "Tommy Jeans",
-    "Tommy Hilfiger",
-    "Bershka",
-    "New Look",
-    "AllSaints",
-    "Columbia",
-    "The North Face",
-    "Collusion",
-    "ASOS DESIGN",
-    "Topman",
-    "Dr Denim",
-    "Polo Ralph Lauren",
-    "ASOS Dark Future",
-    "Levi's",
-    "Threadbare",
-    "Calvin Klein",
-    "AAPE BY A BATHING APE®",
-    "Good For Nothing",
-    "Timberland",
-    "Pull and Bear",
-    "Koi Footwear",
-    "adidas performance",
-    "Nike Running",
-    "Dr Martens",
-    "River Island",
-  ]);
+  const [selectCategoryList, setSelectCategoryList] = useState([]);
+  const [selectCompanyList, setSelectCompanyList] = useState([]);
+
+  useEffect(() => {
+    listCategories()
+      .then((res) => {
+        const categoriesList = res.data.map((category) => category.name);
+        setSelectCategoryList(categoriesList);
+      })
+      .catch((error) => {
+        toast.error("Error: ", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    listCompanies()
+      .then((res) => {
+        const companiesList = res.data.map((company) => company.name);
+        setSelectCompanyList(companiesList);
+      })
+      .catch((error) => {
+        toast.error("Error: ", error);
+      });
+  }, []);
 
   return (
     <Form className="bg-base-200 rounded-md px-8 py-4 grid gap-x-4  gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center">
@@ -84,9 +54,9 @@ const Filters = () => {
       />
       {/* COMPANIES */}
       <FormSelect
-        label="select brand"
-        name="brand"
-        list={selectBrandList}
+        label="select Company"
+        name="company"
+        list={selectCompanyList}
         size="select-sm"
         defaultValue="all"
       />
@@ -98,31 +68,6 @@ const Filters = () => {
         size="select-sm"
         defaultValue="a-z"
       />
-      {/* Producer */}
-      <FormSelect
-        label="Select gender"
-        name="gender"
-        list={["all", "male", "female"]}
-        size="select-sm"
-        defaultValue="all"
-      />
-      {/* PRICE */}
-      <FormRange
-        name="price"
-        label="select price"
-        size="range-sm"
-        price={2000}
-      />
-      {/* Date Picker */}
-      <FormDatePicker label="select minimum production date" name="date" />
-
-      {/* In stock */}
-      <FormCheckbox
-        label="Only products in stock"
-        name="stock"
-        defaultValue="false"
-      />
-
       {/* BUTTONS */}
 
       <button
