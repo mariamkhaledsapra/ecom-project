@@ -45,7 +45,7 @@ const getCompany = (id) => {
 
 const getOwnedCompany = () => {
   const owner = localStorage.getItem("username");
-  return API.get(`users/company/?serializer=get&owner=${owner}`);
+  return API.get(`users/company/?serializer=get&owner__name=${owner}`);
 };
 
 const createCompany = (name, email, address, mobile, tax_number, industry) => {

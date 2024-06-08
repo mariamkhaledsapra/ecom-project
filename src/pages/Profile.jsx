@@ -14,9 +14,9 @@ import {
 
 const Profile = () => {
   const loginState = useSelector((state) => state.auth.isLoggedIn);
-  const [userFormData, setUserFormData] = useState(0);
-  const [companyFormData, setCompanyFormData] = useState(0);
-  const [products, setProducts] = useState(0);
+  const [userFormData, setUserFormData] = useState({});
+  const [companyFormData, setCompanyFormData] = useState({});
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
   const getUserData = async () => {
@@ -100,13 +100,13 @@ const Profile = () => {
       const userId = userObj?.id;
 
       await editUser(userId, {
-        name: userFormData.name,
-        lastname: userFormData.lastname,
-        email: userFormData.email,
-        phone: userFormData.phone,
+        name: userFormData?.name,
+        lastname: userFormData?.lastname,
+        email: userFormData?.email,
+        phone: userFormData?.phone,
         profile: {
-          adress: userFormData.adress,
-          national_id: userFormData.national_id,
+          adress: userFormData?.adress,
+          national_id: userFormData?.national_id,
         },
       });
     } catch (error) {
@@ -126,12 +126,12 @@ const Profile = () => {
             <label className="label">
               <span className="label-text">Your first name</span>
             </label>
-            {console.log("here here inside comp", userFormData.firstname)}
+            {console.log("here here inside comp", userFormData?.firstname)}
             <input
               type="text"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={userFormData.firstname}
+              value={userFormData?.firstname}
               onChange={(e) => {
                 setUserFormData({ ...userFormData, name: e.target.value });
               }}
@@ -146,7 +146,7 @@ const Profile = () => {
               type="text"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={userFormData.lastname}
+              value={userFormData?.lastname}
               onChange={(e) => {
                 setUserFormData({ ...userFormData, lastname: e.target.value });
               }}
@@ -161,7 +161,7 @@ const Profile = () => {
               type="email"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={userFormData.email}
+              value={userFormData?.email}
               onChange={(e) => {
                 setUserFormData({ ...userFormData, email: e.target.value });
               }}
@@ -176,7 +176,7 @@ const Profile = () => {
               type="tel"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={userFormData.phone}
+              value={userFormData?.phone}
               onChange={(e) => {
                 setUserFormData({ ...userFormData, phone: e.target.value });
               }}
@@ -191,7 +191,7 @@ const Profile = () => {
               type="text"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={userFormData.adress}
+              value={userFormData?.adress}
               onChange={(e) => {
                 setUserFormData({ ...userFormData, adress: e.target.value });
               }}
@@ -206,7 +206,7 @@ const Profile = () => {
               type="password"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={userFormData.password}
+              value={userFormData?.password}
               onChange={(e) => {
                 setUserFormData({ ...userFormData, password: e.target.value });
               }}
@@ -234,13 +234,13 @@ const Profile = () => {
             </label>
             {console.log(
               "here here company inside comp",
-              companyFormData.firstname
+              companyFormData?.firstname
             )}
             <input
               type="text"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={companyFormData.firstname}
+              value={companyFormData?.firstname}
               onChange={(e) => {
                 setCompanyFormData({
                   ...companyFormData,
@@ -258,7 +258,7 @@ const Profile = () => {
               type="email"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={companyFormData.email}
+              value={companyFormData?.email}
               onChange={(e) => {
                 setCompanyFormData({
                   ...companyFormData,
@@ -276,7 +276,7 @@ const Profile = () => {
               type="tel"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={companyFormData.mobile}
+              value={companyFormData?.mobile}
               onChange={(e) => {
                 setCompanyFormData({
                   ...companyFormData,
@@ -294,7 +294,7 @@ const Profile = () => {
               type="text"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={companyFormData.adress}
+              value={companyFormData?.adress}
               onChange={(e) => {
                 setCompanyFormData({
                   ...companyFormData,
@@ -311,7 +311,7 @@ const Profile = () => {
               type="text"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={companyFormData.tax_number}
+              value={companyFormData?.tax_number}
               onChange={(e) => {
                 setCompanyFormData({
                   ...companyFormData,
@@ -331,13 +331,13 @@ const Profile = () => {
 
       <SectionTitle path="Company Products" />
       <div className="selected-products-grid max-w-7xl mx-auto">
-        {products.map((product) => (
+        {products?.map((product) => (
           <ProductElement
-            key={product.id}
-            id={product.id}
-            title={product.name}
-            image={product.product_images?.[0]}
-            price={product.product_prices?.[0]}
+            key={product?.id}
+            id={product?.id}
+            title={product?.name}
+            image={product?.product_images?.[0]}
+            price={product?.product_prices?.[0]}
           />
         ))}
       </div>
