@@ -34,6 +34,8 @@ const Login = () => {
   const proceedLogin = async (e) => {
     e.preventDefault();
     if (isValidate()) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
       try {
         const res = await API.post("/login/", {
           username,
@@ -44,6 +46,7 @@ const Login = () => {
 
         if (token) {
           localStorage.setItem("token", token);
+          localStorage.setItem("username", username);
           navigate("/");
         } else {
           toast.warn("Email or password is incorrect");
