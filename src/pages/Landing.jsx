@@ -35,7 +35,7 @@ const Landing = () => {
 
       <div className="selected-products">
         <h2 className="text-6xl text-center my-12 max-md:text-4xl text-accent-content">
-          Trending Products
+          top search  Related items  in all seaction
         </h2>
         <div className="selected-products-grid max-w-7xl mx-auto">
           {products.map((product) => (

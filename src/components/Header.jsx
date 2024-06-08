@@ -58,15 +58,9 @@ const Header = () => {
       <div className="topbar border-b border-gray-800">
         <ul>
           <li>
-            <FaHeadphones className="text-2xl max-sm:text-lg text-accent-content" />
-            <span className="text-2xl max-sm:text-lg text-accent-content">
-              +381 61/123-456
-            </span>
-          </li>
-          <li>
-            <FaRegEnvelope className="text-2xl max-sm:text-lg text-accent-content" />{" "}
-            <span className="text-2xl max-sm:text-lg text-accent-content">
-              support@test.com
+            <span className="text-2xl max-sm:text-lg text-accent-content text-gray-400">
+              Register now and get offers and discounts of up to 75% for a
+              limited time
             </span>
           </li>
         </ul>
@@ -75,10 +69,10 @@ const Header = () => {
         <div className="flex-1">
           <Link
             to="/"
-            className="btn btn-ghost normal-case text-2xl font-black text-accent-content"
+            className="btn btn-ghost normal-case text-2xl font-black text-accent-content text-#2563EB-300"
           >
             <AiFillShopping />
-            Kuzma Clothing & Shoes
+            B2B || STOTE
           </Link>
         </div>
         <div className="flex-none">
@@ -87,7 +81,6 @@ const Header = () => {
             className="btn btn-ghost btn-circle text-accent-content"
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
               fill="none"
               viewBox="0 0 24 24"
@@ -101,12 +94,6 @@ const Header = () => {
               />
             </svg>
           </Link>
-          <button
-            className="text-accent-content btn btn-ghost btn-circle text-xl"
-            onClick={() => dispatch(changeMode())}
-          >
-            {darkMode ? <FaSun /> : <FaMoon />}
-          </button>
           <Link
             to="/wishlist"
             className="btn btn-ghost btn-circle text-accent-content"
@@ -193,7 +180,6 @@ const Header = () => {
         <div className="drawer">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content">
-  
             {/* Page content here */}
             <label htmlFor="my-drawer" className="btn drawer-button">
               <HiMiniBars3BottomLeft className="text-4xl" />
@@ -205,11 +191,11 @@ const Header = () => {
               aria-label="close sidebar"
               className="drawer-overlay"
             ></label>
-                    
+
             <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content mt-4">
-            <label htmlFor="my-drawer" className="btn drawer-button">
-            <FaWindowClose className="text-3xl ml-auto" />
-            </label>
+              <label htmlFor="my-drawer" className="btn drawer-button">
+                <FaWindowClose className="text-3xl ml-auto" />
+              </label>
               {/* Sidebar content here */}
               <li className="text-xl">
                 <NavLink className="text-accent-content" to="/">
