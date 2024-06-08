@@ -34,6 +34,11 @@ const getCompany = (id) => {
   return API.get(`users/company/${id}/?serializer=get`);
 };
 
+const getOwnedCompany = () => {
+  const owner = localStorage.getItem("username");
+  return API.get(`users/company/?serializer=get&owner=${owner}`);
+};
+
 const createCompany = (name, email, address, mobile, tax_number, industry) => {
   return API.post("users/company/?serializer=create", {
     name,
@@ -69,6 +74,7 @@ export {
   API,
   listCompanies,
   getCompany,
+  getOwnedCompany,
   createCompany,
   UploadDocument,
   removeCompany,
