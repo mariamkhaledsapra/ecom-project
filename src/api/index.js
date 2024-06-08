@@ -26,12 +26,51 @@ API.interceptors.request.use(
   }
 );
 
+const listCompanies = () => {
+  return API.get("users/company/?serializer=get");
+};
+
+const getCompany = (id) => {
+  return API.get(`users/company/${id}/?serializer=get`);
+};
+
+const createCompany = (name, email, address, mobile, tax_number, industry) => {
+  return API.post("users/company/?serializer=create", {
+    name,
+    email,
+    address,
+    mobile,
+    tax_number,
+    industry,
+  });
+};
+
+const UploadDocument = (issue_date, file, company) => {
+  API.post("users/document/?serializer=create", {
+    issue_date,
+    file,
+    company,
+  });
+};
+
+const removeCompany = (id) => {
+  return API.delete(`users/company/${id}/?serializer=get`);
+};
+
 const listProducts = () => {
-  return () => API.get("/products-categories/product/");
+  return API.get("/products-categories/product/");
 };
 
 const getProduct = () => {};
 const SearchProducts = () => {};
 const listCategories = () => {};
 
-export default API;
+export {
+  API,
+  listCompanies,
+  getCompany,
+  createCompany,
+  UploadDocument,
+  removeCompany,
+  listProducts,
+};

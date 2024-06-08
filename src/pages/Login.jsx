@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "../store";
 import { loginUser, logoutUser } from "../features/auth/authSlice";
-import API from "../api";
+import { API } from "../api";
 
 const Login = () => {
   const [username, setUsername] = useState("");
