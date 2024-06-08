@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const baseURL = "https://graduation-project-tez6uftvsa-ew.a.run.app/";
-// const baseURL = "http://127.0.0.1:8000/"; // for local testing
+// const baseURL = "https://graduation-project-tez6uftvsa-ew.a.run.app/";
+const baseURL = "http://127.0.0.1:8000/"; // for local testing
 
 const API = axios.create({
   baseURL,
@@ -25,6 +25,15 @@ API.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+const getCurrentUser = () => {
+  const username = localStorage.getItem("username");
+  return API.get(`users/user/?username=${username}`);
+};
+
+const editUser = (id, { ...userData }) => {
+  return API.put(`users/user/${id}/`, userData);
+};
 
 const listCompanies = () => {
   return API.get("users/company/?serializer=get");
@@ -68,6 +77,12 @@ const SearchProducts = (filters) => {
   return API.get(`/products-categories/product/?search=${filters || ""}`);
 };
 
+const getProductsBySeller = (sellerName) => {
+  return API.get(
+    `products-categories/product/?seller__name=${sellerName || ""}`
+  );
+};
+
 const getProduct = (id) => {
   return API.get(`/products-categories/product/${id}/`);
 };
@@ -86,12 +101,15 @@ const getCategory = (id) => {
 
 export {
   API,
+  getCurrentUser,
+  editUser,
   listCompanies,
   getCompany,
   getOwnedCompany,
   createCompany,
   UploadDocument,
   removeCompany,
+  getProductsBySeller,
   SearchProducts,
   getProduct,
   createProduct,

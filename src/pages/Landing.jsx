@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/Landing.css";
 import { Hero, ProductElement, Stats } from "../components";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { SearchProducts, listCategories } from "../api";
 
 export const landingLoader = async () => {
   const response = await axios(
@@ -14,7 +15,17 @@ export const landingLoader = async () => {
 };
 
 const Landing = () => {
-  const { products } = useLoaderData();
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    SearchProducts().then((res) => setProducts(res.data));
+  }, []);
+
+  useEffect(() => {
+    listCategories().then((res) => setCategories(res.data));
+  }, []);
+
   const navigate = useNavigate();
 
   return (
@@ -34,7 +45,7 @@ const Landing = () => {
               title={product.name}
               image={product.imageUrl}
               rating={product.rating}
-              price={product.price.current.value}
+              price={product.price?.current?.value}
             />
           ))}
         </div>

@@ -1,38 +1,39 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SectionTitle } from "../components";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { ProductElement } from "../components";
+
+import {
+  getCurrentUser,
+  editUser,
+  getProductsBySeller,
+  getOwnedCompany,
+} from "../api";
 
 const Profile = () => {
-  const [id, setId] = useState(localStorage.getItem("id"));
-  const [userData, setUserData] = useState({});
   const loginState = useSelector((state) => state.auth.isLoggedIn);
-  const wishItems = useSelector((state) => state.wishlist.wishItems);
-  const [userFormData, setUserFormData] = useState({
-    id: "",
-    name: "",
-    lastname: "",
-    email: "",
-    phone: "",
-    adress: "",
-    password: "",
-  });
+  const [userFormData, setUserFormData] = useState(0);
+  const [companyFormData, setCompanyFormData] = useState(0);
+  const [products, setProducts] = useState(0);
   const navigate = useNavigate();
 
   const getUserData = async () => {
     try {
-      const response = await axios(`http://localhost:8080/user/${id}`);
-      const data = response.data;
+      const response = await getCurrentUser();
+      const data = response?.data?.[0];
+      console.log("here here", data);
       setUserFormData({
-        name: data.name,
-        lastname: data.lastname,
-        email: data.email,
-        phone: data.phone,
-        adress: data.adress,
-        password: data.password,
+        name: data?.firstname,
+        lastname: data?.lastname,
+        email: data?.email,
+        phone: data?.mobile,
+        adress: data?.profile?.adress,
+        national_id: data?.profile?.national_id,
       });
+
+      console.log("here here getUserData", userFormData);
     } catch (error) {
       toast.error("Error: ", error.response);
     }
@@ -47,46 +48,93 @@ const Profile = () => {
     }
   }, []);
 
+  useEffect(() => {
+    getOwnedCompany()
+      .then((res) => {
+        setCompanyFormData(res.data);
+      })
+      .catch((error) => {
+        toast.error("Error: ", error.response);
+      });
+  }, []);
+
+  useEffect(() => {
+    getProductsBySeller(companyFormData?.name)
+      .then((res) => {
+        setProducts(res.data);
+      })
+      .catch((error) => {
+        toast.error("Error: ", error.response);
+      });
+  }, [companyFormData?.name]);
+
+  // useEffect(() => {
+  //   if (loginState) {
+  //     getCurrentUser()
+  //       .then((res) => {
+  //         const data = res?.data?.[0];
+  //         console.log("here here then", data);
+  //         setUserFormData({
+  //           name: data?.firstname,
+  //           lastname: data?.lastname,
+  //           email: data?.email,
+  //           phone: data?.mobile,
+  //           adress: data?.profile?.adress,
+  //           national_id: data?.profile?.national_id,
+  //         });
+  //       })
+  //       .catch((error) => {
+  //         toast.error("Error: ", error.response);
+  //       });
+  //   } else {
+  //     toast.error("You must be logged in to access this page");
+  //     navigate("/");
+  //   }
+  // }, [loginState, navigate, setUserFormData, getCurrentUser.data]);
+
   const updateProfile = async (e) => {
     e.preventDefault();
-    try{
+    try {
+      const getResponse = await getCurrentUser();
+      const userObj = getResponse?.data?.[0];
+      const userId = userObj?.id;
 
-      const getResponse = await axios(`http://localhost:8080/user/${id}`);
-      const userObj = getResponse.data;
-
-      // saljemo get(default) request
-      const putResponse = await axios.put(`http://localhost:8080/user/${id}`, {
-        id: id,
+      await editUser(userId, {
         name: userFormData.name,
         lastname: userFormData.lastname,
         email: userFormData.email,
         phone: userFormData.phone,
-        adress: userFormData.adress,
-        password: userFormData.password,
-        userWishlist: await userObj.userWishlist
-        //userWishlist treba da stoji ovde kako bi sacuvao stanje liste zelja
+        profile: {
+          adress: userFormData.adress,
+          national_id: userFormData.national_id,
+        },
       });
-      const putData = putResponse.data;
-    }catch(error){
+    } catch (error) {
       console.log(error.response);
     }
-  }
+  };
 
   return (
     <>
-      <SectionTitle title="User Profile" path="Home | User Profile" />
-      <form className="max-w-7xl mx-auto text-center px-10" onSubmit={updateProfile}>
+      <SectionTitle title="Profile" path="User Profile" />
+      <form
+        className="max-w-7xl mx-auto text-center px-10"
+        onSubmit={updateProfile}
+      >
         <div className="grid grid-cols-3 max-lg:grid-cols-1">
           <div className="form-control w-full lg:max-w-xs">
             <label className="label">
-              <span className="label-text">Your Name</span>
+              <span className="label-text">Your first name</span>
             </label>
+            {console.log("here here inside comp", userFormData.firstname)}
             <input
               type="text"
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
-              value={userFormData.name}
-              onChange={(e) => {setUserFormData({...userFormData, name: e.target.value})}}
+              value={userFormData.firstname}
+              onChange={(e) => {
+                setUserFormData({ ...userFormData, name: e.target.value });
+              }}
             />
           </div>
 
@@ -99,7 +147,9 @@ const Profile = () => {
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
               value={userFormData.lastname}
-              onChange={(e) => {setUserFormData({...userFormData, lastname: e.target.value})}}
+              onChange={(e) => {
+                setUserFormData({ ...userFormData, lastname: e.target.value });
+              }}
             />
           </div>
 
@@ -112,7 +162,9 @@ const Profile = () => {
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
               value={userFormData.email}
-              onChange={(e) => {setUserFormData({...userFormData, email: e.target.value})}}
+              onChange={(e) => {
+                setUserFormData({ ...userFormData, email: e.target.value });
+              }}
             />
           </div>
 
@@ -125,7 +177,9 @@ const Profile = () => {
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
               value={userFormData.phone}
-              onChange={(e) => {setUserFormData({...userFormData, phone: e.target.value})}}
+              onChange={(e) => {
+                setUserFormData({ ...userFormData, phone: e.target.value });
+              }}
             />
           </div>
 
@@ -138,7 +192,9 @@ const Profile = () => {
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
               value={userFormData.adress}
-              onChange={(e) => {setUserFormData({...userFormData, adress: e.target.value})}}
+              onChange={(e) => {
+                setUserFormData({ ...userFormData, adress: e.target.value });
+              }}
             />
           </div>
 
@@ -151,7 +207,9 @@ const Profile = () => {
               placeholder="Type here"
               className="input input-bordered w-full lg:max-w-xs"
               value={userFormData.password}
-              onChange={(e) => {setUserFormData({...userFormData, password: e.target.value})}}
+              onChange={(e) => {
+                setUserFormData({ ...userFormData, password: e.target.value });
+              }}
             />
           </div>
         </div>
@@ -162,6 +220,127 @@ const Profile = () => {
           Update Profile
         </button>
       </form>
+
+      <SectionTitle path="Company Info" />
+
+      <form
+        className="max-w-7xl mx-auto text-center px-10"
+        onSubmit={updateProfile}
+      >
+        <div className="grid grid-cols-3 max-lg:grid-cols-1">
+          <div className="form-control w-full lg:max-w-xs">
+            <label className="label">
+              <span className="label-text">Company name</span>
+            </label>
+            {console.log(
+              "here here company inside comp",
+              companyFormData.firstname
+            )}
+            <input
+              type="text"
+              placeholder="Type here"
+              className="input input-bordered w-full lg:max-w-xs"
+              value={companyFormData.firstname}
+              onChange={(e) => {
+                setCompanyFormData({
+                  ...companyFormData,
+                  name: e.target.value,
+                });
+              }}
+            />
+          </div>
+
+          <div className="form-control w-full lg:max-w-xs">
+            <label className="label">
+              <span className="label-text">Company Email</span>
+            </label>
+            <input
+              type="email"
+              placeholder="Type here"
+              className="input input-bordered w-full lg:max-w-xs"
+              value={companyFormData.email}
+              onChange={(e) => {
+                setCompanyFormData({
+                  ...companyFormData,
+                  email: e.target.value,
+                });
+              }}
+            />
+          </div>
+
+          <div className="form-control w-full lg:max-w-xs">
+            <label className="label">
+              <span className="label-text">Company Mobile</span>
+            </label>
+            <input
+              type="tel"
+              placeholder="Type here"
+              className="input input-bordered w-full lg:max-w-xs"
+              value={companyFormData.mobile}
+              onChange={(e) => {
+                setCompanyFormData({
+                  ...companyFormData,
+                  mobile: e.target.value,
+                });
+              }}
+            />
+          </div>
+
+          <div className="form-control w-full lg:max-w-xs">
+            <label className="label">
+              <span className="label-text">Company Adress</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Type here"
+              className="input input-bordered w-full lg:max-w-xs"
+              value={companyFormData.adress}
+              onChange={(e) => {
+                setCompanyFormData({
+                  ...companyFormData,
+                  adress: e.target.value,
+                });
+              }}
+            />
+          </div>
+          <div className="form-control w-full lg:max-w-xs">
+            <label className="label">
+              <span className="label-text">Company tax number</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Type here"
+              className="input input-bordered w-full lg:max-w-xs"
+              value={companyFormData.tax_number}
+              onChange={(e) => {
+                setCompanyFormData({
+                  ...companyFormData,
+                  tax_number: e.target.value,
+                });
+              }}
+            />
+          </div>
+        </div>
+        <button
+          className="btn btn-lg bg-blue-600 hover:bg-blue-500 text-white mt-10"
+          type="submit"
+        >
+          Update Company
+        </button>
+      </form>
+
+      <SectionTitle path="Company Products" />
+      <div className="selected-products-grid max-w-7xl mx-auto">
+        {products.map((product) => (
+          <ProductElement
+            key={product.id}
+            id={product.id}
+            title={product.name}
+            image={product.product_images?.[0]}
+            price={product.product_prices?.[0]}
+          />
+        ))}
+      </div>
     </>
   );
 };

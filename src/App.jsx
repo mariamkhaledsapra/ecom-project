@@ -13,7 +13,7 @@ import {
   Profile,
   Search,
   ThankYou,
-  OrderHistory
+  OrderHistory,
 } from "./pages";
 import { landingLoader } from "./pages/Landing";
 import { singleProductLoader } from "./pages/SingleProduct";
@@ -33,8 +33,7 @@ const router = createBrowserRouter([
       {
         path: "shop",
         element: <Shop />,
-        loader: shopLoader
-
+        loader: shopLoader,
       },
       {
         path: "shop/product/:id",
@@ -74,17 +73,17 @@ const router = createBrowserRouter([
         element: <Profile />,
       },
       {
-        path:"search",
-        element: <Search />
+        path: "search",
+        element: <Search />,
       },
       {
-        path:"thank-you",
-        element: <ThankYou />
+        path: "thank-you",
+        element: <ThankYou />,
       },
       {
-        path:"order-history",
-        element: <OrderHistory />
-      }
+        path: "order-history",
+        element: <OrderHistory />,
+      },
     ],
   },
 ]);
