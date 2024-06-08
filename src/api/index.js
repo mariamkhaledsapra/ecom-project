@@ -74,7 +74,8 @@ const removeCompany = (id) => {
 };
 
 const SearchProducts = (filters) => {
-  return API.get(`/products-categories/product/?search=${filters || ""}`);
+  console.log("here here filters", filters);
+  return API.get(`/products-categories/product/${filters || ""}`);
 };
 
 const getProductsBySeller = (sellerName) => {

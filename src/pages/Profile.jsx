@@ -23,7 +23,6 @@ const Profile = () => {
     try {
       const response = await getCurrentUser();
       const data = response?.data?.[0];
-      console.log("here here", data);
       setUserFormData({
         name: data?.firstname,
         lastname: data?.lastname,
@@ -32,8 +31,6 @@ const Profile = () => {
         adress: data?.profile?.adress,
         national_id: data?.profile?.national_id,
       });
-
-      console.log("here here getUserData", userFormData);
     } catch (error) {
       toast.error("Error: ", error.response);
     }
@@ -126,7 +123,6 @@ const Profile = () => {
             <label className="label">
               <span className="label-text">Your first name</span>
             </label>
-            {console.log("here here inside comp", userFormData?.firstname)}
             <input
               type="text"
               placeholder="Type here"
@@ -232,10 +228,6 @@ const Profile = () => {
             <label className="label">
               <span className="label-text">Company name</span>
             </label>
-            {console.log(
-              "here here company inside comp",
-              companyFormData?.firstname
-            )}
             <input
               type="text"
               placeholder="Type here"
