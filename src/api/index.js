@@ -58,17 +58,31 @@ const UploadDocument = (issue_date, file, company) => {
   });
 };
 
+// TODO: editCompany
+
 const removeCompany = (id) => {
   return API.delete(`users/company/${id}/?serializer=get`);
 };
 
-const listProducts = () => {
-  return API.get("/products-categories/product/");
+const SearchProducts = (filters) => {
+  return API.get(`/products-categories/product/?search=${filters || ""}`);
 };
 
-const getProduct = () => {};
-const SearchProducts = () => {};
-const listCategories = () => {};
+const getProduct = (id) => {
+  return API.get(`/products-categories/product/${id}/`);
+};
+
+const createProduct = () => {
+  // TODO: write body
+};
+
+const listCategories = () => {
+  return API.get("/products-categories/category/");
+};
+
+const getCategory = (id) => {
+  return API.get(`/products-categories/category/${id}/`);
+};
 
 export {
   API,
@@ -78,5 +92,9 @@ export {
   createCompany,
   UploadDocument,
   removeCompany,
-  listProducts,
+  SearchProducts,
+  getProduct,
+  createProduct,
+  listCategories,
+  getCategory,
 };
