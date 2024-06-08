@@ -5,9 +5,10 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "../store";
 import { loginUser, logoutUser } from "../features/auth/authSlice";
+import API from "../api";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -23,38 +24,33 @@ const Login = () => {
   const isValidate = () => {
     let isProceed = true;
 
-    if (email.length === 0) {
+    if (username.length === 0) {
       isProceed = false;
-      toast.warn("Please enter a email");
-    } else if (password.length < 6) {
-      isProceed = false;
-      toast.warn("Password must be minimum 6 characters");
+      toast.warn("Please enter a username");
     }
     return isProceed;
   };
 
-  const proceedLogin = (e) => {
+  const proceedLogin = async (e) => {
     e.preventDefault();
     if (isValidate()) {
-      fetch("http://localhost:8080/user")
-        .then((res) => res.json())
-        .then((res) => {
-          let data = res;
-          const foundUser = data.filter(
-            (item) => item.email === email && item.password === password
-          );
-          if (foundUser[0]) {
-            toast.success("Login successful");
-            localStorage.setItem("id", foundUser[0].id);
-            store.dispatch(loginUser());
-            navigate("/");
-          } else {
-            toast.warn("Email or password is incorrect");
-          }
-        })
-        .catch((err) => {
-          toast.error("Login failed due to: " + err.message);
+      try {
+        const res = await API.post("/login/", {
+          username,
+          password,
         });
+
+        const token = res?.data?.token;
+
+        if (token) {
+          localStorage.setItem("token", token);
+          navigate("/");
+        } else {
+          toast.warn("Email or password is incorrect");
+        }
+      } catch (err) {
+        toast.error("Login failed due to: " + err.message);
+      }
     }
   };
 
@@ -66,13 +62,13 @@ const Login = () => {
           <div className="bg-dark border border-gray-600 shadow w-full rounded-lg divide-y divide-gray-200">
             <form className="px-5 py-7" onSubmit={proceedLogin}>
               <label className="font-semibold text-sm pb-1 block text-accent-content">
-                E-mail
+                Username
               </label>
               <input
-                value={email}
+                value={username}
                 required={true}
-                onChange={(e) => setEmail(e.target.value)}
-                type="email"
+                onChange={(e) => setUsername(e.target.value)}
+                type="text"
                 className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
               />
               <label className="font-semibold text-sm pb-1 block text-accent-content">
